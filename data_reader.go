@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"io"
+	"log"
 )
 
 var (
@@ -83,6 +84,10 @@ func (r *internalDataReader) Read(data []byte) (n int, err error) {
 	const DONT = 254
 
 	p := data
+
+	log.Printf("data_reader.go: Read()")
+	log.Printf("length of data = %v", len(data))
+	log.Print("data_reader.go: p = %v", p)
 
 	for {
 		var b byte
