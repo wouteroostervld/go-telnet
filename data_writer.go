@@ -5,8 +5,6 @@ import (
 	"io"
 )
 
-var iaciac []byte = []byte{255, 255}
-
 // An internalDataWriter deals with "escaping" according to the TELNET (and TELNETS) protocol.
 //
 // In the TELNET (and TELNETS) protocol byte value 255 is special.
@@ -82,13 +80,13 @@ func (w *internalDataWriter) Write(data []byte) (n int, err error) {
 				w.wrapped.Flush()
 				return n_total, e
 			}
-			_, e = w.wrapped.WriteByte(255)
+			e = w.wrapped.WriteByte(255)
 			if e != nil {
 				return n_total, e
 			}
 			w.wrapped.Flush()
 			n_total += 1
-			_, e = w.wrapped.WriteByte(255)
+			e = w.wrapped.WriteByte(255)
 			if e != nil {
 				w.wrapped.Flush()
 				return n_total, e
