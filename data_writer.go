@@ -72,7 +72,7 @@ func (w *internalDataWriter) Write(data []byte) (n int, err error) {
 	var n_total int = 0
 	for i := 0; i < len(data); i++ {
 		if data[i] == 255 {
-			log.Printf(("Found IAC at %d"), i))
+			log.Printf("Found IAC at %d", i)
 			// we found an IAC
 			// write the buffer up to this point
 			// write the IAC
