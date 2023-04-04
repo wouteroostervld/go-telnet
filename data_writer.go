@@ -3,6 +3,7 @@ package telnet
 import (
 	"bufio"
 	"io"
+	"log"
 )
 
 // An internalDataWriter deals with "escaping" according to the TELNET (and TELNETS) protocol.
@@ -71,12 +72,14 @@ func (w *internalDataWriter) Write(data []byte) (n int, err error) {
 	var n_total int = 0
 	for i := 0; i < len(data); i++ {
 		if data[i] == 255 {
+			log.Printf(("Found IAC at %d"), i))
 			// we found an IAC
 			// write the buffer up to this point
 			// write the IAC
 			n, e := w.wrapped.Write(data[:i])
 			n_total += n
 			if e != nil {
+				log.Printf("Flushing")
 				w.wrapped.Flush()
 				return n_total, e
 			}
@@ -84,10 +87,12 @@ func (w *internalDataWriter) Write(data []byte) (n int, err error) {
 			if e != nil {
 				return n_total, e
 			}
+			log.Printf("Flushing")
 			w.wrapped.Flush()
 			n_total += 1
 			e = w.wrapped.WriteByte(255)
 			if e != nil {
+				log.Printf("Flushing")
 				w.wrapped.Flush()
 				return n_total, e
 			}
@@ -98,9 +103,11 @@ func (w *internalDataWriter) Write(data []byte) (n int, err error) {
 	n, e := w.wrapped.Write(data)
 	n_total += n
 	if e != nil {
+		log.Printf("Flushing")
 		w.wrapped.Flush()
 		return n_total, e
 	}
+	log.Printf("Flushing")
 	w.wrapped.Flush()
 	return n_total, nil
 }
