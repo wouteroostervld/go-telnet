@@ -1,11 +1,9 @@
 package telnet
 
-
 import (
 	"crypto/tls"
 	"net"
 )
-
 
 // ListenAndServeTLS acts identically to ListenAndServe, except that it
 // uses the TELNET protocol over TLS.
@@ -18,16 +16,16 @@ import (
 // For a very simple example:
 //
 //	package main
-//	
+//
 //	import (
 //		"github.com/reiver/go-telnet"
 //	)
-//	
+//
 //	func main() {
-//		
+//
 //		//@TODO: In your code, you would probably want to use a different handler.
 //		var handler telnet.Handler = telnet.EchoHandler
-//		
+//
 //		err := telnet.ListenAndServeTLS(":5555", "cert.pem", "key.pem", handler)
 //		if nil != err {
 //			//@TODO: Handle this error better.
@@ -39,8 +37,6 @@ func ListenAndServeTLS(addr string, certFile string, keyFile string, handler Han
 	return server.ListenAndServeTLS(certFile, keyFile)
 }
 
-
-
 // ListenAndServeTLS acts identically to ListenAndServe, except that it
 // uses the TELNET protocol over TLS.
 //
@@ -49,16 +45,14 @@ func ListenAndServeTLS(addr string, certFile string, keyFile string, handler Han
 func (server *Server) ListenAndServeTLS(certFile string, keyFile string) error {
 
 	addr := server.Addr
-	if "" == addr {
+	if addr == "" {
 		addr = ":telnets"
 	}
-
 
 	listener, err := net.Listen("tcp", addr)
 	if nil != err {
 		return err
 	}
-
 
 	// Apparently have to make a copy of the TLS config this way, rather than by
 	// simple assignment, to prevent some unexported fields from being copied over.
@@ -71,31 +65,27 @@ func (server *Server) ListenAndServeTLS(certFile string, keyFile string) error {
 		tlsConfig = &tls.Config{}
 	} else {
 		tlsConfig = &tls.Config{
-			Rand:                     server.TLSConfig.Rand,
-			Time:                     server.TLSConfig.Time,
-			Certificates:             server.TLSConfig.Certificates,
-			NameToCertificate:        server.TLSConfig.NameToCertificate,
-			GetCertificate:           server.TLSConfig.GetCertificate,
-			RootCAs:                  server.TLSConfig.RootCAs,
-			NextProtos:               server.TLSConfig.NextProtos,
-			ServerName:               server.TLSConfig.ServerName,
-			ClientAuth:               server.TLSConfig.ClientAuth,
-			ClientCAs:                server.TLSConfig.ClientCAs,
-			InsecureSkipVerify:       server.TLSConfig.InsecureSkipVerify,
-			CipherSuites:             server.TLSConfig.CipherSuites,
-			PreferServerCipherSuites: server.TLSConfig.PreferServerCipherSuites,
-			SessionTicketsDisabled:   server.TLSConfig.SessionTicketsDisabled,
-			SessionTicketKey:         server.TLSConfig.SessionTicketKey,
-			ClientSessionCache:       server.TLSConfig.ClientSessionCache,
-			MinVersion:               server.TLSConfig.MinVersion,
-			MaxVersion:               server.TLSConfig.MaxVersion,
-			CurvePreferences:         server.TLSConfig.CurvePreferences,
+			Rand:                   server.TLSConfig.Rand,
+			Time:                   server.TLSConfig.Time,
+			Certificates:           server.TLSConfig.Certificates,
+			GetCertificate:         server.TLSConfig.GetCertificate,
+			RootCAs:                server.TLSConfig.RootCAs,
+			NextProtos:             server.TLSConfig.NextProtos,
+			ServerName:             server.TLSConfig.ServerName,
+			ClientAuth:             server.TLSConfig.ClientAuth,
+			ClientCAs:              server.TLSConfig.ClientCAs,
+			InsecureSkipVerify:     server.TLSConfig.InsecureSkipVerify,
+			CipherSuites:           server.TLSConfig.CipherSuites,
+			SessionTicketsDisabled: server.TLSConfig.SessionTicketsDisabled,
+			ClientSessionCache:     server.TLSConfig.ClientSessionCache,
+			MinVersion:             server.TLSConfig.MinVersion,
+			MaxVersion:             server.TLSConfig.MaxVersion,
+			CurvePreferences:       server.TLSConfig.CurvePreferences,
 		}
 	}
 
-
 	tlsConfigHasCertificate := len(tlsConfig.Certificates) > 0 || nil != tlsConfig.GetCertificate
-	if "" == certFile || "" == keyFile || !tlsConfigHasCertificate {
+	if certFile == "" || keyFile == "" || !tlsConfigHasCertificate {
 		tlsConfig.Certificates = make([]tls.Certificate, 1)
 
 		var err error
@@ -105,9 +95,7 @@ func (server *Server) ListenAndServeTLS(certFile string, keyFile string) error {
 		}
 	}
 
-
 	tlsListener := tls.NewListener(listener, tlsConfig)
-
 
 	return server.Serve(tlsListener)
 }
