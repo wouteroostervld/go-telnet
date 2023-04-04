@@ -167,6 +167,9 @@ func (r *internalDataReader) Read(data []byte) (n int, err error) {
 			n++
 			p = p[1:]
 		}
+		if n > 0 {
+			return n, nil
+		}
 	}
 
 }
